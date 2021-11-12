@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        
+        <PackageId>Ertis.Scraper.Extensions.AspNetCore</PackageId>
+        <PackageVersion>5.0.0</PackageVersion>
+        <Authors>Ertuğrul Özcan</Authors>
+        <Description>Ertis.Scraper.Extensions.AspNetCore</Description>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <Copyright>Ertuğrul Özcan | Copyright 2021 (c)</Copyright>
+        <PackageReleaseNotes>Initial package</PackageReleaseNotes>
+        <PackageTags>Ertis.Scraper.Extensions.AspNetCore</PackageTags>
+        <Title>Ertis.Scraper.Extensions.AspNetCore</Title>
+        <PackageProjectUrl>https://github.com/ertugrulozcan/Ertis.Scraper</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/ertugrulozcan/Ertis.Scraper</RepositoryUrl>
+        <AssemblyVersion>5.0.0</AssemblyVersion>
+        <FileVersion>5.0.0</FileVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Ertis.Scraper\Ertis.Scraper.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
+    </ItemGroup>
+
+</Project>

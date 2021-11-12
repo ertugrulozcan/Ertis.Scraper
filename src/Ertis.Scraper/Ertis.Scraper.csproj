@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+
+        <PackageId>Ertis.Scraper</PackageId>
+        <PackageVersion>5.0.0</PackageVersion>
+        <Authors>Ertuğrul Özcan</Authors>
+        <Description>Ertis.Scraper</Description>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <Copyright>Ertuğrul Özcan | Copyright 2021 (c)</Copyright>
+        <PackageReleaseNotes>Initial package</PackageReleaseNotes>
+        <PackageTags>Ertis.Scraper</PackageTags>
+        <Title>Ertis.Scraper</Title>
+        <PackageProjectUrl>https://github.com/ertugrulozcan/Ertis.Scraper</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/ertugrulozcan/Ertis.Scraper</RepositoryUrl>
+        <AssemblyVersion>5.0.0</AssemblyVersion>
+        <FileVersion>5.0.0</FileVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="HtmlAgilityPack" Version="1.11.37" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="PuppeteerSharp" Version="5.1.0" />
+    </ItemGroup>
+
+</Project>

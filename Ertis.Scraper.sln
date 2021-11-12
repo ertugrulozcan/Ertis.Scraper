@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ertis.Scraper", "src\Ertis.Scraper\Ertis.Scraper.csproj", "{FC941603-07DB-4B5F-BE7D-612F66C25F77}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ertis.Scraper.Extensions.AspNetCore", "src\Ertis.Scraper.Extensions.AspNetCore\Ertis.Scraper.Extensions.AspNetCore.csproj", "{F84133C9-ED9F-4C05-985B-0E1DF0EFA656}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{D31C1C09-2489-4ABA-B47E-EBE8CDDA42C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ertis.Scraper.ConsoleApp", "examples\Ertis.Scraper.ConsoleApp\Ertis.Scraper.ConsoleApp.csproj", "{7D33D05E-0A0C-4A69-8E49-A3E6563539DF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC941603-07DB-4B5F-BE7D-612F66C25F77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC941603-07DB-4B5F-BE7D-612F66C25F77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC941603-07DB-4B5F-BE7D-612F66C25F77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC941603-07DB-4B5F-BE7D-612F66C25F77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F84133C9-ED9F-4C05-985B-0E1DF0EFA656}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F84133C9-ED9F-4C05-985B-0E1DF0EFA656}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F84133C9-ED9F-4C05-985B-0E1DF0EFA656}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F84133C9-ED9F-4C05-985B-0E1DF0EFA656}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D33D05E-0A0C-4A69-8E49-A3E6563539DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D33D05E-0A0C-4A69-8E49-A3E6563539DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D33D05E-0A0C-4A69-8E49-A3E6563539DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D33D05E-0A0C-4A69-8E49-A3E6563539DF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7D33D05E-0A0C-4A69-8E49-A3E6563539DF} = {D31C1C09-2489-4ABA-B47E-EBE8CDDA42C5}
+	EndGlobalSection
+EndGlobal
