@@ -1,4 +1,6 @@
+using System;
 using System.Threading.Tasks;
+using Ertis.Scraper.Extensions;
 using PuppeteerSharp;
 
 namespace Ertis.Scraper.Interactions
@@ -30,7 +32,22 @@ namespace Ertis.Scraper.Interactions
 		public async Task ExecuteAsync(Page page)
 		{
 			var selector = this.GetParameterValue<string>("selector");
-			await page.FocusAsync(selector);
+			if (selector.StartsWith(XPathSelector.XPathSelectorToken))
+			{
+				var element = await page.QuerySelectorByXPath(selector);
+				if (element != null)
+				{
+					await element.FocusAsync();
+				}
+				else
+				{
+					throw new Exception($"Node not found with '{selector}' selector on focus function");
+				}
+			}
+			else
+			{
+				await page.FocusAsync(selector);	
+			}
 		}
 
 		#endregion

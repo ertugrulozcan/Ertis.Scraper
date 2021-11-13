@@ -53,23 +53,14 @@ namespace Ertis.Scraper.Interactions
 				clickOptions = new ClickOptions();
 				if (button != null)
 				{
-					switch (button.Value)
+					clickOptions.Button = button.Value switch
 					{
-						case MouseButtonType.Left:
-							clickOptions.Button = MouseButton.Left;
-							break;
-						case MouseButtonType.Right:
-							clickOptions.Button = MouseButton.Right;
-							break;
-						case MouseButtonType.Middle:
-							clickOptions.Button = MouseButton.Middle;
-							break;
-						case MouseButtonType.None:
-							clickOptions.Button = MouseButton.None;
-							break;
-						default:
-							throw new ArgumentOutOfRangeException();
-					}
+						MouseButtonType.Left => MouseButton.Left,
+						MouseButtonType.Right => MouseButton.Right,
+						MouseButtonType.Middle => MouseButton.Middle,
+						MouseButtonType.None => MouseButton.None,
+						_ => throw new ArgumentOutOfRangeException()
+					};
 				}
 
 				if (delay != null)
@@ -82,8 +73,24 @@ namespace Ertis.Scraper.Interactions
 					clickOptions.ClickCount = clickCount.Value;
 				}
 			}
-			
-			await page.ClickAsync(selector, clickOptions);
+
+			if (selector.StartsWith(XPathSelector.XPathSelectorToken))
+			{
+				var xpathQueryResult = await page.XPathAsync(selector);
+				if (xpathQueryResult is { Length: > 0 })
+				{
+					var element = xpathQueryResult[0];
+					await element.ClickAsync(clickOptions);
+				}
+				else
+				{
+					throw new Exception($"Node not found with '{selector}' selector on click function");
+				}
+			}
+			else
+			{
+				await page.ClickAsync(selector, clickOptions);	
+			}
 		}
 
 		#endregion

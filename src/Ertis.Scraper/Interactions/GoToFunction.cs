@@ -30,7 +30,7 @@ namespace Ertis.Scraper.Interactions
 		public async Task ExecuteAsync(Page page)
 		{
 			var url = this.GetParameterValue<string>("url");
-			await page.GoToAsync(url);
+			await page.GoToAsync(url, WaitUntilNavigation.DOMContentLoaded);
 		}
 
 		#endregion

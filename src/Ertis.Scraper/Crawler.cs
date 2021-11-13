@@ -180,22 +180,34 @@ namespace Ertis.Scraper
 				await this.FixUserAgent(page);
 				await page.GoToAsync(url);
 
+				if (waitForOptions != null)
+				{
+					if (waitForOptions.Selector.StartsWith(XPathSelector.XPathSelectorToken))
+					{
+						await page.WaitForXPathAsync(waitForOptions.Selector, new WaitForSelectorOptions
+						{
+							Hidden = waitForOptions.Hidden,
+							Visible = waitForOptions.Visible,
+							Timeout = waitForOptions.TimeOut
+						});	
+					}
+					else
+					{
+						await page.WaitForSelectorAsync(waitForOptions.Selector, new WaitForSelectorOptions
+						{
+							Hidden = waitForOptions.Hidden,
+							Visible = waitForOptions.Visible,
+							Timeout = waitForOptions.TimeOut
+						});	
+					}
+				}
+				
 				if (this.Target.Interactions != null && this.Target.Interactions.Any())
 				{
 					foreach (var interactionFunction in this.Target.Interactions)
 					{
-						await interactionFunction.ExecuteAsync(page);
+						await interactionFunction.ExecuteAsync(page).ConfigureAwait(false);
 					}
-				}
-				
-				if (waitForOptions != null)
-				{
-					await page.WaitForSelectorAsync(waitForOptions.Selector, new WaitForSelectorOptions
-					{
-						Hidden = waitForOptions.Hidden,
-						Visible = waitForOptions.Visible,
-						Timeout = waitForOptions.TimeOut
-					});
 				}
 				
 				return await page.GetContentAsync();
