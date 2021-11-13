@@ -9,7 +9,7 @@ namespace Ertis.Scraper.Extensions
 	{
 		#region Methods
 
-		public static object Parse(this Type type, [NotNull] string text, FieldFormatter formatter)
+		public static object Parse(this Type type, [NotNull] string text, FieldFormatter formatter = null)
 		{
 			return type.Parse(text, formatter, CultureInfo.CurrentCulture);
 		}
@@ -19,14 +19,21 @@ namespace Ertis.Scraper.Extensions
 			if (type == typeof(int))
 			{
 				text = text.TrimAllWhitespaces();
-				text = formatter.Format(text);
+				if (formatter != null)
+				{
+					text = formatter.Format(text);	
+				}
+				
 				return int.Parse(text, NumberStyles.Integer, cultureInfo);
 			}
 			else if (type == typeof(double))
 			{
 				text = text.TrimAllWhitespaces();
-				text = formatter.Format(text);
-				
+				if (formatter != null)
+				{
+					text = formatter.Format(text);		
+				}
+
 				return double.Parse(text, 
 					NumberStyles.Number | 
 					NumberStyles.AllowThousands | 
@@ -39,12 +46,20 @@ namespace Ertis.Scraper.Extensions
 			}
 			else if (type == typeof(bool))
 			{
-				text = formatter.Format(text);
+				if (formatter != null)
+				{
+					text = formatter.Format(text);		
+				}
+				
 				return bool.Parse(text);
 			}
 			else
 			{
-				text = formatter.Format(text);
+				if (formatter != null)
+				{
+					text = formatter.Format(text);		
+				}
+				
 				var converter = TypeDescriptor.GetConverter(type);
 				
 				// ReSharper disable once AssignNullToNotNullAttribute
@@ -52,6 +67,20 @@ namespace Ertis.Scraper.Extensions
 			}
 		}
 
+		public static bool TryParse(this Type type, [NotNull] string text, out object value)
+		{
+			try
+			{
+				value = type.Parse(text);
+				return true;
+			}
+			catch
+			{
+				value = default;
+				return false;
+			}
+		}
+		
 		public static bool TryParse(this Type type, [NotNull] string text, FieldFormatter formatter, out object value)
 		{
 			try

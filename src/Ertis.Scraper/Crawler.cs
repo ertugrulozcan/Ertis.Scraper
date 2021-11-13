@@ -57,7 +57,6 @@ namespace Ertis.Scraper
 		public async Task<ScrapingResult> ScrapeAsync(string url)
 		{
 			var stopwatch = Stopwatch.StartNew();
-			
 			var htmlDocument = new HtmlDocument();
 
 			try
@@ -181,6 +180,14 @@ namespace Ertis.Scraper
 				await this.FixUserAgent(page);
 				await page.GoToAsync(url);
 
+				if (this.Target.Interactions != null && this.Target.Interactions.Any())
+				{
+					foreach (var interactionFunction in this.Target.Interactions)
+					{
+						await interactionFunction.ExecuteAsync(page);
+					}
+				}
+				
 				if (waitForOptions != null)
 				{
 					await page.WaitForSelectorAsync(waitForOptions.Selector, new WaitForSelectorOptions

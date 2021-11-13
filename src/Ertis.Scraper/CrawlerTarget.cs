@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Ertis.Scraper.Interactions;
 using Newtonsoft.Json;
 
 namespace Ertis.Scraper
@@ -18,6 +19,9 @@ namespace Ertis.Scraper
 		
 		[JsonIgnore]
 		public IEnumerable<FieldInfo> Schema { get; set; }
+		
+		[JsonIgnore]
+		public IEnumerable<IInteractionFunction> Interactions { get; set; }
 
 		[JsonProperty("options")]
 		public CrawlerOptions Options { get; set; }

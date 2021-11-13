@@ -18,7 +18,7 @@ namespace Ertis.Scraper
 		/// <summary>
 		/// Wait for element to be present in DOM and to be visible.
 		/// </summary>
-		[JsonProperty("selector")]
+		[JsonProperty("visible")]
 		public bool Visible { get; set; }
 		
 		/// <summary>

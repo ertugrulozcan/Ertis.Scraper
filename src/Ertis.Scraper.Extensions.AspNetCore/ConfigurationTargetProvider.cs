@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Ertis.Scraper.Abstractions;
+using Ertis.Scraper.Interactions;
 using Microsoft.Extensions.Configuration;
 
 namespace Ertis.Scraper.Extensions.AspNetCore
@@ -39,14 +40,8 @@ namespace Ertis.Scraper.Extensions.AspNetCore
 			foreach (var targetSection in targetSections)
 			{
 				var crawlerTarget = targetSection.Get<CrawlerTarget>();
-				var fieldInfos = new List<FieldInfo>();
-				var fieldSections = targetSection.GetSection("schema").GetChildren();
-				foreach (var fieldSection in fieldSections)
-				{
-					fieldInfos.Add(ParseToFieldInfo(fieldSection));
-				}
-
-				crawlerTarget.Schema = fieldInfos;
+				crawlerTarget.Schema = ParseSchema(targetSection);
+				crawlerTarget.Interactions = ParseInteractions(targetSection);
 
 				yield return crawlerTarget;
 			}
@@ -56,7 +51,23 @@ namespace Ertis.Scraper.Extensions.AspNetCore
 		{
 			return this.GetTargets().FirstOrDefault(x => x.Name == name);
 		}
-		
+
+		private static IEnumerable<FieldInfo> ParseSchema(IConfiguration targetSection)
+		{
+			var fieldInfos = new List<FieldInfo>();
+			var fieldSections = targetSection.GetSection("schema").GetChildren();
+			foreach (var fieldSection in fieldSections)
+			{
+				var fieldInfo = ParseToFieldInfo(fieldSection);
+				if (fieldInfo != null)
+				{
+					fieldInfos.Add(fieldInfo);	
+				}
+			}
+
+			return fieldInfos;
+		}
+
 		private static FieldInfo ParseToFieldInfo([NotNull] IConfigurationSection fieldSection)
 		{
 			if (fieldSection == null)
@@ -120,6 +131,45 @@ namespace Ertis.Scraper.Extensions.AspNetCore
 			return fieldInfo;
 		}
 
+		private static IEnumerable<IInteractionFunction> ParseInteractions(IConfiguration targetSection)
+		{
+			var interactions = new List<IInteractionFunction>();
+			var interactionSections = targetSection.GetSection("interactions").GetChildren();
+			foreach (var interactionSection in interactionSections)
+			{
+				var interaction = ParseToInteraction(interactionSection);
+				if (interaction != null)
+				{
+					interactions.Add(interaction);	
+				}
+			}
+
+			return interactions;
+		}
+
+		private static IInteractionFunction ParseToInteraction([NotNull] IConfigurationSection functionSection)
+		{
+			if (functionSection == null)
+			{
+				return null;
+			}
+
+			var functionName = functionSection.Key;
+			if (FunctionFactory.TryCreateFunction(functionName, out var function))
+			{
+				if (function.Parameters != null)
+				{
+					foreach (var functionParameter in function.Parameters)
+					{
+						var value = functionSection.GetValue(functionParameter.Name, functionParameter.Type);
+						functionParameter.SetValue(value);
+					}
+				}
+			}
+
+			return function as IInteractionFunction;
+		}
+		
 		#endregion
 	}
 }
