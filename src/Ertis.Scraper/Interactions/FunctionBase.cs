@@ -15,6 +15,8 @@ namespace Ertis.Scraper.Interactions
 
 		public abstract string Name { get; }
 		
+		public string Comment { get; set; }
+		
 		protected abstract FunctionParameter[] DefaultParameters { get; }
 
 		public FunctionParameter[] Parameters

@@ -172,7 +172,7 @@ namespace Ertis.Scraper
 			var payload = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
 			if (payload is JObject root)
 			{
-				return DeserializeInteraction(root["interactions"] as JObject);
+				return DeserializeInteraction(root["interactions"] as JArray);
 			}
 			else
 			{
@@ -180,44 +180,70 @@ namespace Ertis.Scraper
 			}
 		}
 		
-		private static IEnumerable<IInteractionFunction> DeserializeInteraction(JObject schemaRoot)
+		private static IEnumerable<IInteractionFunction> DeserializeInteraction(JArray interactionsJArray)
 		{
-			if (schemaRoot == null)
+			if (interactionsJArray == null)
 			{
 				yield break;
 			}
-			
-			foreach (var (functionName, interactionToken) in schemaRoot)
+
+			foreach (var interactionJToken in interactionsJArray)
 			{
-				if (interactionToken is JObject interactionJObject)
+				if (interactionJToken is JObject interactionJObject)
 				{
-					if (FunctionFactory.TryCreateFunction(functionName, out var function))
+					string functionName = null;
+					if (interactionJObject.ContainsKey("function"))
 					{
-						if (function.Parameters != null)
+						functionName = interactionJObject.GetValue("function")?.ToString();
+					}
+					
+					string comment = null;
+					if (interactionJObject.ContainsKey("comment"))
+					{
+						comment = interactionJObject.GetValue("comment")?.ToString();
+					}
+
+					if (string.IsNullOrEmpty(functionName))
+					{
+						throw new Exception("Function name is missing!");
+					}
+
+					if (interactionJObject.ContainsKey("parameters"))
+					{
+						var interactionParametersJToken = interactionJObject["parameters"];
+						if (interactionParametersJToken is JObject interactionParametersJObject)
 						{
-							foreach (var functionParameter in function.Parameters)
+							if (FunctionFactory.TryCreateFunction(functionName, out var function))
 							{
-								if (interactionJObject.ContainsKey(functionParameter.Name))
+								if (function.Parameters != null)
 								{
-									var stringValue = interactionJObject[functionParameter.Name]?.Value<object>()?.ToString();
-									if (functionParameter.Type.TryParse(stringValue, out var value))
+									foreach (var functionParameter in function.Parameters)
 									{
-										functionParameter.SetValue(value);	
-									}
-									else
-									{
-										throw new Exception($"The function parameter '{functionParameter.Name}' could not be parsed to '{functionParameter.Type}' on '{functionName}' function.");
+										if (interactionParametersJObject.ContainsKey(functionParameter.Name))
+										{
+											var stringValue = interactionParametersJObject[functionParameter.Name]?.Value<object>()?.ToString();
+											if (functionParameter.Type.TryParse(stringValue, out var value))
+											{
+												functionParameter.SetValue(value);	
+											}
+											else
+											{
+												throw new Exception($"The function parameter '{functionParameter.Name}' could not be parsed to '{functionParameter.Type}' on '{functionName}' function.");
+											}
+										}
 									}
 								}
-							}
-						}
+
+								function.Comment = comment;
 						
-						yield return function as IInteractionFunction;
-					}	
-				}
-				else
-				{
-					throw new Exception("Interaction function node is not valid!");
+								yield return function as IInteractionFunction;
+							}	
+						}
+						else
+						{
+							throw new Exception("Interaction function node is not valid!");
+						}	
+					}
 				}
 			}
 		}

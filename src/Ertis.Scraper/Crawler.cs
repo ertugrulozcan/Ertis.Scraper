@@ -110,7 +110,14 @@ namespace Ertis.Scraper
 			}
 
 			errors = errorList.Any() ? errorList.ToArray() : null;
-			return dictionary.ConvertToDynamicObject();
+			if (dictionary.Any())
+			{
+				return dictionary.ConvertToDynamicObject();
+			}
+			else
+			{
+				return null;
+			}
 		}
 
 		private static object GetFieldValue(HtmlNode rootNode, FieldInfo fieldInfo, out string[] errors)
@@ -131,7 +138,12 @@ namespace Ertis.Scraper
 					var errorList = new List<string>();
 					foreach (var node in parentNode.ChildNodes)
 					{
-						arrayValues.Add(GetFieldValue(node, fieldInfo.Enumerator, out var innerErrors));
+						var childValue = GetFieldValue(node, fieldInfo.Enumerator, out var innerErrors);
+						if (childValue != null)
+						{
+							arrayValues.Add(childValue);	
+						}
+						
 						if (innerErrors != null)
 						{
 							errorList.AddRange(innerErrors);

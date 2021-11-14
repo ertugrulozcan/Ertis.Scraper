@@ -144,24 +144,36 @@ namespace Ertis.Scraper.Extensions.AspNetCore
 			return interactions;
 		}
 
-		private static IInteractionFunction ParseToInteraction([NotNull] IConfigurationSection functionSection)
+		private static IInteractionFunction ParseToInteraction([NotNull] IConfiguration functionSection)
 		{
 			if (functionSection == null)
 			{
 				return null;
 			}
 
-			var functionName = functionSection.Key;
+			var functionName = functionSection.GetValue<string>("function");
+			if (string.IsNullOrEmpty(functionName))
+			{
+				throw new Exception("Function name is missing!");
+			}
+			
+			var comment = functionSection.GetValue<string>("comment");
 			if (FunctionFactory.TryCreateFunction(functionName, out var function))
 			{
 				if (function.Parameters != null)
 				{
+					var functionParameterSections = functionSection.GetSection("parameters");
 					foreach (var functionParameter in function.Parameters)
 					{
-						var value = functionSection.GetValue(functionParameter.Name, functionParameter.Type);
-						functionParameter.SetValue(value);
+						var value = functionParameterSections.GetValue(functionParameter.Type, functionParameter.Name);
+						if (value != null)
+						{
+							functionParameter.SetValue(value);	
+						}
 					}
 				}
+
+				function.Comment = comment;
 			}
 
 			return function as IInteractionFunction;
