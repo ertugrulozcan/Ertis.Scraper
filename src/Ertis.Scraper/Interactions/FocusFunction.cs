@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Ertis.Scraper.Extensions;
 using PuppeteerSharp;
@@ -32,21 +33,53 @@ namespace Ertis.Scraper.Interactions
 		public async Task ExecuteAsync(Page page)
 		{
 			var selector = this.GetParameterValue<string>("selector");
-			if (selector.StartsWith(XPathSelector.XPathSelectorToken))
+			
+			var frame = this.GetParameterValue<string>("frame");
+			if (string.IsNullOrEmpty(frame))
 			{
-				var element = await page.QuerySelectorByXPath(selector);
-				if (element != null)
+				if (selector.StartsWith(XPathSelector.XPathSelectorToken))
 				{
-					await element.FocusAsync();
+					var element = await page.QuerySelectorByXPath(selector);
+					if (element != null)
+					{
+						await element.FocusAsync();
+					}
+					else
+					{
+						throw new Exception($"Node not found with '{selector}' selector on focus function");
+					}
 				}
 				else
 				{
-					throw new Exception($"Node not found with '{selector}' selector on focus function");
+					await page.FocusAsync(selector);	
 				}
 			}
 			else
 			{
-				await page.FocusAsync(selector);	
+				var currentFrame = page.Frames.FirstOrDefault(x => x.Name == frame);
+				if (currentFrame != null)
+				{
+					if (selector.StartsWith(XPathSelector.XPathSelectorToken))
+					{
+						var element = await currentFrame.QuerySelectorByXPath(selector);
+						if (element != null)
+						{
+							await element.FocusAsync();
+						}
+						else
+						{
+							throw new Exception($"Node not found with '{selector}' selector on focus function");
+						}
+					}
+					else
+					{
+						await currentFrame.FocusAsync(selector);	
+					}
+				}
+				else
+				{
+					throw new Exception($"Frame not found with name '{frame}'");
+				}
 			}
 		}
 

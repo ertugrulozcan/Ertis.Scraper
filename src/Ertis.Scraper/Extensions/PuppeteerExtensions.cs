@@ -19,6 +19,19 @@ namespace Ertis.Scraper.Extensions
 			await handle.DisposeAsync().ConfigureAwait(false);
 			return null;
 		}
+		
+		public static async Task<ElementHandle> QuerySelectorByXPath(this Frame frame, string xpath)
+		{
+			var script = $"document.evaluate('{xpath}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;";
+			var handle = await frame.EvaluateExpressionHandleAsync(script).ConfigureAwait(false);
+			if (handle is ElementHandle element)
+			{
+				return element;
+			}
+
+			await handle.DisposeAsync().ConfigureAwait(false);
+			return null;
+		}
 
 		#endregion
 	}

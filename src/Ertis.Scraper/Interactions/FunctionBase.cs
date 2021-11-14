@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Ertis.Scraper.Interactions
@@ -23,6 +24,21 @@ namespace Ertis.Scraper.Interactions
 				if (this.parameters == null && this.DefaultParameters != null)
 				{
 					this.parameters = this.DefaultParameters;
+				}
+
+				if (this.parameters == null)
+				{
+					this.parameters = new FunctionParameter[]
+					{
+						new FunctionParameter<string> { Name = "frame" }
+					};
+				}
+				else if (this.parameters.All(x => x.Name != "frame"))
+				{
+					var parameterList = new List<FunctionParameter>();
+					parameterList.AddRange(this.parameters);
+					parameterList.Add(new FunctionParameter<string> { Name = "frame" });
+					this.parameters = parameterList.ToArray();
 				}
 
 				return this.parameters;

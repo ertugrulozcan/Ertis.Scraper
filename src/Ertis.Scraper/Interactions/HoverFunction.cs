@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Ertis.Scraper.Extensions;
 using PuppeteerSharp;
 
 namespace Ertis.Scraper.Interactions
@@ -31,22 +33,53 @@ namespace Ertis.Scraper.Interactions
 		public async Task ExecuteAsync(Page page)
 		{
 			var selector = this.GetParameterValue<string>("selector");
-			if (selector.StartsWith(XPathSelector.XPathSelectorToken))
+			
+			var frame = this.GetParameterValue<string>("frame");
+			if (string.IsNullOrEmpty(frame))
 			{
-				var xpathQueryResult = await page.XPathAsync(selector);
-				if (xpathQueryResult is { Length: > 0 })
+				if (selector.StartsWith(XPathSelector.XPathSelectorToken))
 				{
-					var element = xpathQueryResult[0];
-					await element.HoverAsync();
+					var element = await page.QuerySelectorByXPath(selector);
+					if (element != null)
+					{
+						await element.HoverAsync();
+					}
+					else
+					{
+						throw new Exception($"Node not found with '{selector}' selector on hover function");
+					}
 				}
 				else
 				{
-					throw new Exception($"Node not found with '{selector}' selector on hover function");
+					await page.HoverAsync(selector);	
 				}
 			}
 			else
 			{
-				await page.HoverAsync(selector);	
+				var currentFrame = page.Frames.FirstOrDefault(x => x.Name == frame);
+				if (currentFrame != null)
+				{
+					if (selector.StartsWith(XPathSelector.XPathSelectorToken))
+					{
+						var element = await currentFrame.QuerySelectorByXPath(selector);
+						if (element != null)
+						{
+							await element.HoverAsync();
+						}
+						else
+						{
+							throw new Exception($"Node not found with '{selector}' selector on hover function");
+						}
+					}
+					else
+					{
+						await currentFrame.HoverAsync(selector);	
+					}
+				}
+				else
+				{
+					throw new Exception($"Frame not found with name '{frame}'");
+				}
 			}
 		}
 
