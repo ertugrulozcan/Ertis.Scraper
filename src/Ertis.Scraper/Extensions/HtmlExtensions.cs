@@ -170,7 +170,7 @@ namespace Ertis.Scraper.Extensions
 			}
 			else
 			{
-				throw new Exception($"Attribute is not exist with name '{attributeName} in '{node.Name}' node");
+				throw new Exception($"Attribute is not exist with name '{attributeName}' in '{node.Name}' node");
 			}
 		}
 		
