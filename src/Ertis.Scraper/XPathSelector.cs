@@ -24,9 +24,12 @@ namespace Ertis.Scraper
 			foreach (var node in nodes)
 			{
 				var matchedNodes = node.SelectNodes($"{XPathSelectorToken}{this.Selector}");
-				foreach (var matchedNode in matchedNodes)
+				if (matchedNodes != null)
 				{
-					yield return matchedNode;	
+					foreach (var matchedNode in matchedNodes)
+					{
+						yield return matchedNode;	
+					}	
 				}
 			}
 		}
