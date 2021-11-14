@@ -23,6 +23,14 @@ namespace Ertis.Scraper.Interactions
 					{
 						Name = "selector"
 					},
+					new FunctionParameter<int?>
+					{
+						Name = "x"
+					},
+					new FunctionParameter<int?>
+					{
+						Name = "y"
+					},
 					new FunctionParameter<MouseButtonType?>
 					{
 						Name = "button"
@@ -46,9 +54,12 @@ namespace Ertis.Scraper.Interactions
 		public async Task ExecuteAsync(Page page)
 		{
 			var selector = this.GetParameterValue<string>("selector");
+			var x = this.GetParameterValue<int?>("x");
+			var y = this.GetParameterValue<int?>("y");
 			var button = this.GetParameterValue<MouseButtonType?>("button");
 			var delay = this.GetParameterValue<int?>("delay");
 			var clickCount = this.GetParameterValue<int?>("clickCount");
+			
 			ClickOptions clickOptions = null;
 			if (button != null || delay != null || clickCount != null)
 			{
@@ -76,6 +87,22 @@ namespace Ertis.Scraper.Interactions
 				}
 			}
 
+			if (!string.IsNullOrEmpty(selector))
+			{
+				await this.ClickSelectorAsync(page, selector, clickOptions);
+			}
+			else if (x != null && y != null)
+			{
+				await this.ClickCoordinateAsync(page, x.Value, y.Value, clickOptions);
+			}
+			else
+			{
+				throw new ArgumentNullException(nameof(selector), "Selector or coordinate parameters required for click function!");
+			}
+		}
+
+		private async Task ClickSelectorAsync(Page page, string selector, ClickOptions clickOptions)
+		{
 			var frame = this.GetParameterValue<string>("frame");
 			if (string.IsNullOrEmpty(frame))
 			{
@@ -123,6 +150,11 @@ namespace Ertis.Scraper.Interactions
 					throw new Exception($"Frame not found with name '{frame}'");
 				}
 			}
+		}
+		
+		private async Task ClickCoordinateAsync(Page page, int x, int y, ClickOptions clickOptions)
+		{
+			await page.Mouse.ClickAsync(x, y, clickOptions);
 		}
 
 		#endregion
