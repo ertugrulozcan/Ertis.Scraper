@@ -36,12 +36,22 @@ namespace Ertis.Scraper
 			{
 				if (this.Options.TrimStart == string.Empty && this.Options.TrimEnd == string.Empty)
 				{
-					return value.Trim();
+					value = value.Trim();
 				}
 				else
 				{
-					return value.TrimStart(this.Options.TrimStart).TrimEnd(this.Options.TrimEnd);
+					value = value.TrimStart(this.Options.TrimStart).TrimEnd(this.Options.TrimEnd);
 				}
+			}
+
+			if (!string.IsNullOrEmpty(this.Options.AppendStart))
+			{
+				value = this.Options.AppendStart + value;
+			}
+
+			if (!string.IsNullOrEmpty(this.Options.AppendEnd))
+			{
+				value += this.Options.AppendEnd;
 			}
 
 			return value;

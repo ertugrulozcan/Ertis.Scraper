@@ -14,6 +14,12 @@ namespace Ertis.Scraper
 		
 		[JsonProperty("trimEnd")]
 		public string TrimEnd { get; set; }
+		
+		[JsonProperty("appendStart")]
+		public string AppendStart { get; set; }
+		
+		[JsonProperty("appendEnd")]
+		public string AppendEnd { get; set; }
 
 		#endregion
 	}
