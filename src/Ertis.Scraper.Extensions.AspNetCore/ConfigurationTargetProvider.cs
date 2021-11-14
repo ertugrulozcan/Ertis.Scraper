@@ -93,13 +93,10 @@ namespace Ertis.Scraper.Extensions.AspNetCore
 				throw new Exception($"Field type missing or unsupported for '{fieldName}'");	
 			}
 			
-			FieldEnumeratorInfo fieldEnumeratorInfo = null;
+			FieldInfo fieldEnumeratorInfo = null;
 			if (fieldArrayEnumeratorSection != null)
 			{
-				fieldEnumeratorInfo = 
-					FieldEnumeratorInfo.FromBase(
-						ParseToFieldInfo(fieldArrayEnumeratorSection), 
-						fieldArrayEnumeratorSection.GetValue<string>("item-container"));
+				fieldEnumeratorInfo = ParseToFieldInfo(fieldArrayEnumeratorSection);
 			}
 
 			FieldInfo[] fieldObjectSchema = default;

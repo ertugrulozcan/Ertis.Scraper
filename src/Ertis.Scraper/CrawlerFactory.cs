@@ -84,7 +84,7 @@ namespace Ertis.Scraper
 			string attributeName = null;
 			string fieldDescription = null;
 			FieldOptions fieldOptions = default;
-			FieldEnumeratorInfo arrayEnumerator = default;
+			FieldInfo arrayEnumerator = default;
 			FieldInfo[] objectSchema = default;
 			
 			var dictionary = fieldInfoJObject
@@ -151,9 +151,7 @@ namespace Ertis.Scraper
 			if (dictionary.ContainsKey("enumerator") && dictionary["enumerator"] != null)
 			{
 				var enumeratorJToken = dictionary["enumerator"] as JObject;
-				var itemContainerSelector = enumeratorJToken?.Value<string>("item-container");
-				var enumeratorFieldInfo = DeserializeFieldInfo("enumerator", enumeratorJToken);
-				arrayEnumerator = FieldEnumeratorInfo.FromBase(enumeratorFieldInfo, itemContainerSelector);
+				arrayEnumerator = DeserializeFieldInfo("enumerator", enumeratorJToken);
 			}
 			
 			return new FieldInfo

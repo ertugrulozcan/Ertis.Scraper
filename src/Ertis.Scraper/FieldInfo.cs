@@ -25,7 +25,7 @@ namespace Ertis.Scraper
 		public FieldOptions Options { get; set; }
 		
 		[JsonProperty("enumerator")]
-		public FieldEnumeratorInfo Enumerator { get; set; }
+		public FieldInfo Enumerator { get; set; }
 		
 		[JsonProperty("schema")]
 		public FieldInfo[] ObjectSchema { get; set; }
