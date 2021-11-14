@@ -74,7 +74,7 @@ namespace Ertis.Scraper
 					ElapsedMilliseconds = stopwatch.ElapsedMilliseconds
 				};
 			}
-
+			
 			var result = GetObject(htmlDocument.DocumentNode, this.Target.Schema, out string[] errors);
 			stopwatch.Stop();
 			
@@ -128,9 +128,8 @@ namespace Ertis.Scraper
 				{
 					var arrayValues = new List<object>();
 					var parentNode = rootNode.FindNode(fieldInfo.Route);
-					var nodes = parentNode.FindNodes(fieldInfo.Enumerator.ItemContainer);
 					var errorList = new List<string>();
-					foreach (var node in nodes)
+					foreach (var node in parentNode.ChildNodes)
 					{
 						arrayValues.Add(GetFieldValue(node, fieldInfo.Enumerator, out var innerErrors));
 						if (innerErrors != null)
@@ -178,6 +177,20 @@ namespace Ertis.Scraper
 			{
 				await using var page = await this.BrowserContext.Browser.NewPageAsync();
 				await this.FixUserAgent(page);
+
+				if (this.Target.Options?.Viewport != null)
+				{
+					await page.SetViewportAsync(new ViewPortOptions
+					{
+						Height = this.Target.Options.Viewport.Height, 
+						Width = this.Target.Options.Viewport.Width, 
+						HasTouch = this.Target.Options.Viewport.HasTouch, 
+						IsLandscape = this.Target.Options.Viewport.IsLandscape, 
+						IsMobile = this.Target.Options.Viewport.IsMobile, 
+						DeviceScaleFactor = this.Target.Options.Viewport.ScaleFactor
+					});	
+				}
+
 				await page.GoToAsync(url);
 
 				if (waitForOptions != null)

@@ -8,6 +8,9 @@ namespace Ertis.Scraper
 
 		[JsonProperty("waitfor")]
 		public WaitForOptions WaitFor { get; set; }
+		
+		[JsonProperty("viewport")]
+		public ViewportOptions Viewport { get; set; }
 
 		#endregion
 	}
